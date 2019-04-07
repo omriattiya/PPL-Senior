@@ -1,6 +1,5 @@
 import math
 
-
 class ComplexNum(object):
 
     @staticmethod
@@ -28,7 +27,7 @@ class ComplexNum(object):
         sign = " + "
         if self.b < 0:
             new_b *= -1
-            sign = " - "
+            sign = "-"
         return str(self.a) + sign + str(new_b) + "i"
 
     def __eq__(self, other):
@@ -58,20 +57,8 @@ class ComplexNum(object):
     def __abs__(self):
         return math.sqrt((self * self.conjugate()).re())
 
+    def abs(self):
+        return self.__abs__()
 
-# TODO: check if need to support 1+complex and check about neg and abs!
-# TODO: z.neg() not working, just -z
-# TODO: z.abs not working, just abs(z)
-
-# Tests
-z = ComplexNum(1, 2)
-print str(z)
-print z == ComplexNum(1, 1)
-print z == ComplexNum(1, 2)
-print str(z + ComplexNum(1, -3))
-print str(-z)
-print str(z - ComplexNum(4, 3))
-print str(z * z)
-print str(z * ComplexNum(2, 3))
-print str(z.conjugate())
-print str(abs(z))
+    def neg(self):
+        return self.__neg__()
