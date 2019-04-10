@@ -129,25 +129,6 @@ def numSubclassPPL(class1, classInfo):
         return 0
     return num_instance(class1, classInfo,1)
 
-class A(object): pass
-class B(A): pass
-class C(B): pass
-class D(object): pass
-
-c = D()
-# print isInstancePPL(c, D)
-# print numInstancePPL(c, D)
-# print C.__bases__ == B
-# print list(type(c).__bases__)[0] == B
-# print list(type(list(type(c).__bases__)[0]).__bases__)
-# print B
-# print type(c)
-# print ((type(c).__bases__)[0].__bases__)[0].__bases__
-# print c is C
-
-# print type(c).__bases__[0] is object
-
-
 #######################33333333333##############################3
 
 
