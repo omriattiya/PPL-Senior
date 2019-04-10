@@ -165,3 +165,9 @@ def for_all_red(lst, apply, pred):
     if callable(apply) and callable(pred) and isinstance(lst, list):
         return pred( reduce(apply,lst))
     raise ValueError("Value don't much")
+
+
+## if we need only in high order function
+
+def there_exists(lst, n, pred):
+    return reduce(lambda x, y: x+ 1 if pred(y) else x,lst, 0) >= n
