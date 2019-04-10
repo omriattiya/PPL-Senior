@@ -125,7 +125,9 @@ def numSubclassPPL(class1, classInfo):
         raise TypeError("class1 is not of type 'type'")
     if type(classInfo) is not type:
         raise TypeError("classInfo is not of type 'type'")
-    return num_instance(class1, classInfo, 0)
+    if not isSubclassPPL(class1, classInfo):
+        return 0
+    return num_instance(class1, classInfo,1)
 
 class A(object): pass
 class B(A): pass
