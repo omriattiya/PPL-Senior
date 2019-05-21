@@ -1,0 +1,51 @@
+body {
+    background-size: cover;
+    color: #FFFFFF;
+    font-family: "Berlin Sans FB", sans-serif;
+    margin: 0;
+}
+
+.nav_bar {
+    background-color: #00000088;
+    min-height: 50px;
+    margin: 0;
+    text-align: center;
+    padding-top: 15px;
+}
+
+.nav_bar > li > .selected {
+    color: #00FF00
+}
+
+.nav_bar > li {
+    list-style-type: none;
+    align-self: center;
+    font-size: 2em;
+    text-decoration: none;
+    display: inline;
+    padding: 0 40px 0 40px;
+}
+
+.nav_bar > li > a {
+    text-decoration: none;
+    color: #a5a5a5;
+}
+
+.nav_bar > li > a:hover {
+    color: #FAFAFA;
+}
+
+.content {
+    animation-name: enter_fade;
+    animation-duration: 2s;
+    width: 100%;
+}
+
+@keyframes enter_fade {
+    from {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}

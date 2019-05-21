@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ files.css_news }}">
+    <link rel="stylesheet" type="text/css" href="{{ files.css_master }}">
+    <script>
+        window.onload = function () {
+            // code goes here
+        };
+    </script>
+    <style>
+        body {
+            background-image: url({{ files.background_url }});
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>PPL Final Project</title>
+
+</head>
+<body>
+<ul class="nav_bar">
+    <li><a href="/main">HOME</a></li>
+    <li><a class="selected" href="/bbc">BBC</a></li>
+    <li><a href="/nytimes">NY TIMES</a></li>
+
+
+</ul>
+
+<div class="content padding_top">
+    <div class="abstract">
+        <div class="delimiter"></div>
+        BBC NEWS
+        <div class="delimiter"></div>
+    </div>
+    <div class="articles">
+        {{ files.articles }}
+    </div>
+</div>
+</body>
+</html>

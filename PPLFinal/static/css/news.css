@@ -1,0 +1,21 @@
+.delimiter {
+    height: 1px;
+    margin: 10px auto;
+    width: 50%;
+    align-self: center;
+    background-color: white;
+}
+
+.margin_top {
+    margin-top: 30px
+}
+
+.padding_top {
+    padding-top: 30px
+}
+
+.abstract {
+    color: white;
+    font-size: 3em;
+    text-align: center;
+}
