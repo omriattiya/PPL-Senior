@@ -115,10 +115,12 @@ if __name__ == '__main__':
     print(sentiment("This movie was utter junk. There were absolutely 0 pythons. I don't see what the point was at all. Horrible movie, 0/10"))
 
     # num_row = 0
-    with open('report.txt', 'r') as content_file:
+    with open('news_texts.txt') as content_file:
         head = content_file.readline()
+        print(head)
         print(sentiment(head))
         content = content_file.readline()
+        print(content)
         print(sentiment(content))
 
     print(sentiment("Trump to hit Mexico with tariffs in anti-immigration measure"))
