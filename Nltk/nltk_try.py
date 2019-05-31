@@ -35,6 +35,11 @@ def calc_model():
     for w in movie_reviews.words():
         all_words.append(w.lower())
 
+    all_words_2gram = []
+    # for w in movie_reviews:
+    #     sixgrams = nltk.ngrams(w.split(), 2)
+    #     all_words_2gram.append(w.lower())
+
     all_words = nltk.FreqDist(all_words)
     print("getting features")
     word_features = list(all_words.keys())[:5000]
@@ -62,7 +67,7 @@ def calc_model():
 
     print('LinearSVC_classifier average accuracy:', sum(accur) / len(accur))
 
-    save_pickle(pickle_model, classifier)
+    # save_pickle(pickle_model, classifier)
 
 
 def sentiment(text):
@@ -74,6 +79,15 @@ def sentiment(text):
 
 
 def find_features(tweet):
+    global word_features
+    words = set(tweet)
+    features = {}
+    for w in word_features:
+        features[w] = (w in words)
+
+    return features
+
+def find_features2gram(tweet):
     global word_features
     words = set(tweet)
     features = {}
@@ -97,16 +111,16 @@ def load_pickle(filename):
 if __name__ == '__main__':
     calc_model()
     # classifier = load_pickle(pickle_model)
-    print(
-        sentiment("This movie was awesome! The acting was great, plot was wonderful, and there were pythons...so yea!"))
-    print(sentiment(
-        "This movie was utter junk. There were absolutely 0 pythons. I don't see what the point was at all. Horrible movie, 0/10"))
+    print(sentiment("This movie was awesome! The acting was great, plot was wonderful, and there were pythons...so yea!"))
+    print(sentiment("This movie was utter junk. There were absolutely 0 pythons. I don't see what the point was at all. Horrible movie, 0/10"))
 
     # num_row = 0
-    # with open('report.txt', 'r') as content_file:
-    #     content = content_file.read()
-    #     print(sentiment(content))
-    #
-    # print(sentiment("Trump to hit Mexico with tariffs in anti-immigration measure"))
+    with open('report.txt', 'r') as content_file:
+        head = content_file.readline()
+        print(sentiment(head))
+        content = content_file.readline()
+        print(sentiment(content))
+
+    print(sentiment("Trump to hit Mexico with tariffs in anti-immigration measure"))
 
     # app.run(debug=True)
