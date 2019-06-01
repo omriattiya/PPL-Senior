@@ -1,26 +1,43 @@
+import time
+from newsapi import NewsApiClient
+from datetime import date, timedelta
+
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 import json, requests
 
-blocked_words = ["By", "Advertisement", "Supported by"]
+newsapi = NewsApiClient(api_key='3334261d6662411b904a56968905f2bd')
 
-source = "nyt"  # all | nyt | iht
-section = "all"
-time_period = "0"
-limit = "10"
-offset = "0"
-api_key = "x5WGDxz9N2HToSwpoSnYHT4hNpk3psbl"
-ny_times = "https://api.nytimes.com/svc/news/v3/content/%s/%s/%s.json?limit=%s&api-key=%s"
-query = ny_times % (source, section, time_period, limit, api_key)
-resp = requests.get(query)
-data = resp.json()['results']
-for record in data:
-    print(record['title'])
-    url = record['url']
-    page = urlopen(url)
-    soup = BeautifulSoup(page, 'lxml')
-    paragraphs = soup.find_all("p", {'class': 'css-18icg9x'})
-    for p in paragraphs:
-        if p.getText() not in blocked_words:
-            print(p.getText())
-    print()
+from_date = time.strftime("%Y-%m-%d")
+to_date = (date.today() - timedelta(days=3)).strftime("%Y-%m-%d")
+
+for k in range(1, 5):
+    all_articles = newsapi.get_everything(sources='fox-news',
+                                          from_param=from_date,
+                                          to=to_date,
+                                          language='en',
+                                          sort_by='publishedAt',
+                                          page=k)
+    i = 0
+    for article in all_articles['articles']:
+        url = article['url']
+        print(url)
+        print(article['urlToImage'])
+        try:
+            page = urlopen(url)
+        except:
+            i += 1
+
+        # soup = BeautifulSoup(page, 'lxml')
+        # paragraphs = soup.find_all("p", {'class': ''})
+        # all_text = ''
+        # if len(paragraphs) > 10:
+        #     print(article['title'])
+        #     print(article['description'])
+        #     print(article['url'])
+        #     for p in paragraphs:
+        #         all_text += str(p.getText()) + " "
+        #         print(p.getText())
+        #
+        #     print()
+    print(i)

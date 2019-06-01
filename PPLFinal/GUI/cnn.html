@@ -26,7 +26,7 @@
         window.onload = function () {
             socket = io.connect('http://' + document.domain + ':' + location.port);
             socket.on('connect', function () {
-                socket.emit('connected', {data: 'I\'m connected!'});
+                socket.emit('connected', {data: 'cnn page'});
             });
 
             socket.on('add news', function (news) {
@@ -82,15 +82,15 @@
 <ul class="nav_bar">
     <li><a href="/main">HOME</a></li>
     <li><a href="/bbc">BBC</a></li>
-    <li><a href="/cnn">CNN</a></li>
-    <li><a class="selected" href="/nytimes">NY TIMES</a></li>
+    <li><a class="selected" href="/cnn">CNN</a></li>
+    <li><a href="/nytimes">NY TIMES</a></li>
 
 </ul>
 
 <div class="content padding_top">
     <div class="abstract">
         <div class="delimiter"></div>
-        The New York Times News
+        CNN News
         <br><img src='{{ files.logo }}' alt="logo" height="200px" style="margin-top: 10px">
 <div class="delimiter"></div>
     </div>

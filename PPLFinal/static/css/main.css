@@ -1,44 +1,45 @@
-  .title {
-            color: white;
-            font-size: 6em;
-            text-align: center;
-        }
+.title {
+    color: white;
+    font-size: 5.5em;
+    text-align: center;
+    font-weight: bold;
+}
 
-        .delimiter {
-            height: 1px;
-            margin: 10px auto;
-            width: 50%;
-            align-self: center;
-            background-color: white;
-        }
+.delimiter {
+    height: 1px;
+    margin: 10px auto;
+    width: 50%;
+    align-self: center;
+    background-color: white;
+}
 
-        .margin_top {
-            margin-top: 30px
-        }
+.margin_top {
+    margin-top: 20px
+}
 
-        .padding_top {
-            padding-top: 30px
-        }
+.padding_top {
+    padding-top: 30px
+}
 
-        .abstract {
-            color: white;
-            font-size: 3em;
-            text-align: center;
-        }
+.abstract {
+    color: white;
+    font-size: 3em;
+    text-align: center;
+}
 
-        .button {
-            background-color: #00FF00AA;
-            border: none;
-            color: white;
-            padding: 20px 60px;
-            text-align: center;
-            font-size: 1.5em;
-            font-family: "Berlin Sans FB", sans-serif;
-            margin: 30px auto;
-            cursor: pointer;
-            border-radius: 60px;
-        }
+.button {
+    background-color: #00b0ffAA;
+    border: none;
+    color: white;
+    padding: 20px 60px;
+    text-align: center;
+    font-size: 1.8em;
+    font-family: "Calibri", sans-serif;
+    margin: 30px auto;
+    cursor: pointer;
+    border-radius: 60px;
+}
 
-        .button:hover {
-            background-color: #00FF00CC;
-        }
+.button:hover {
+    background-color: #00b0ffDD;
+}

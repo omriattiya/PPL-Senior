@@ -1,31 +1,44 @@
-from flask import Flask, render_template, url_for
+import json
+import time
+
+from datetime import date, timedelta
+from flask import Flask, render_template, url_for, jsonify, copy_current_request_context, redirect
 from flask_socketio import SocketIO, emit
-import time, requests, threading
+import requests, threading
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
-
-url = ('https://newsapi.org/v2/top-headlines?'
-       'sources=bbc-news&'
-       'apiKey=3334261d6662411b904a56968905f2bd')
-
 from newsapi import NewsApiClient
 
-# Init
+# INIT :D
+add_news_thread = None
+stop_news_thread = False
 newsapi = NewsApiClient(api_key='3334261d6662411b904a56968905f2bd')
-
 app = Flask(__name__, template_folder="GUI")
 app.config['SECRET_KEY'] = 'ppl_final'
 socketio = SocketIO(app)
 
 
-@socketio.on('a')  # Decorator to catch an event called "my event":
-def test_message(message):  # test_message() is the event callback function.
+@socketio.on('connected')
+def test_message(message):
     print(message)
+
+
+@socketio.on('stop')
+def stop_thread():
+    global stop_news_thread
+    stop_news_thread = True
+    time.sleep(2)
+
+
+@app.errorhandler(404)
+def redirect_to_main(err):
+    return redirect(url_for('main'))
 
 
 @app.route('/main', methods=['GET', 'POST'])
 def main():
-    files = {'background_url': url_for('static', filename='images/backgroundDarker.jpg'),
+    stop_thread()
+    files = {'background_url': url_for('static', filename='images/bg2.png'),
              'css_main': url_for('static', filename='css/main.css'),
              'css_master': url_for('static', filename='css/master.css')}
 
@@ -34,59 +47,169 @@ def main():
 
 @app.route('/bbc', methods=['GET', 'POST'])
 def bbc():
-    # response = requests.get(url)
-    # return jsonify(response.json()["articles"][0]["content"])
-    #
-    # # /v2/top-headlines
-    # top_headlines = newsapi.get_top_headlines(sources='bbc-news')
-    #
-    date = time.strftime("%Y-%d-%m")
-    all_articles = newsapi.get_everything(sources='bbc-news',
-                                          domains='bbc.co.uk',
-                                          from_param=date,
-                                          to=date,
-                                          language='en',
-                                          sort_by='relevancy',
-                                          page=2)
+    global add_news_thread, stop_news_thread
+    stop_thread()
 
-    files = {'background_url': url_for('static', filename='images/backgroundDarker.jpg'),
-             'css_news': url_for('static', filename='css/news.css'),
-             'css_master': url_for('static', filename='css/master.css'),
-             'articles': all_articles}
+    @copy_current_request_context
+    def bbc_thread():
+        global stop_news_thread
+        stop_news_thread = False
 
-    return render_template('bbc.html', files=files)
+        from_date = date.today().strftime("%Y-%m-%d")
+        to_date = (date.today() - timedelta(days=2)).strftime("%Y-%m-%d")
+
+        for k in range(1, 3):
+            all_articles = newsapi.get_everything(sources='bbc-news',
+                                                  domains='bbc.co.uk',
+                                                  from_param=from_date,
+                                                  to=to_date,
+                                                  language='en',
+                                                  sort_by='publishedAt',
+                                                  page=k)
+            for record in all_articles['articles']:
+                if stop_news_thread:
+                    stop_news_thread = False
+                    return
+                url = record['url']
+                page = urlopen(url)
+                soup = BeautifulSoup(page, 'lxml')
+                paragraphs = soup.find_all("p", {'class': ''})
+                all_text = ''
+                if len(paragraphs) > 10:
+                    for p in paragraphs:
+                        all_text += str(p.getText()) + " "
+                else:
+                    continue
+
+                news = {
+                    'title': str(record['title']),
+                    'url': str(record['url']),
+                    'abstract': str(record['description']),
+                    'thumbnail': str(record['urlToImage']),
+                    'content': json.dumps(all_text)
+                }
+                socketio.emit('add news', news)
+                print(record['title'])
+
+    add_news_thread = threading.Thread(target=bbc_thread)
+    add_news_thread.start()
+
+    return render_template('bbc.html', files=news_files('bbc'))
+
+
+@app.route('/cnn', methods=['GET', 'POST'])
+def cnn():
+    global add_news_thread, stop_news_thread
+    stop_thread()
+
+    @copy_current_request_context
+    def cnn_thread():
+        global stop_news_thread
+        stop_news_thread = False
+
+        from_date = date.today().strftime("%Y-%m-%d")
+        to_date = (date.today() - timedelta(days=2)).strftime("%Y-%m-%d")
+
+        for k in range(1, 3):
+            all_articles = newsapi.get_everything(sources='cnn',
+                                                  domains='cnn.com',
+                                                  from_param=from_date,
+                                                  to=to_date,
+                                                  language='en',
+                                                  sort_by='publishedAt',
+                                                  page=k)
+            for record in all_articles['articles']:
+                if stop_news_thread:
+                    stop_news_thread = False
+                    return
+                url = record['url']
+                try:
+                    page = urlopen(url)
+                except:
+                    continue
+                soup = BeautifulSoup(page, 'lxml')
+                paragraphs = soup.find_all("div", {'class': 'zn-body__paragraph'})
+                all_text = ''
+                if len(paragraphs) > 10:
+                    for p in paragraphs:
+                        all_text += str(p.getText()) + " "
+                else:
+                    continue
+
+                news = {
+                    'title': str(record['title']),
+                    'url': str(record['url']),
+                    'abstract': str(record['description']),
+                    'thumbnail': str(record['urlToImage']),
+                    'content': json.dumps(all_text)
+                }
+                socketio.emit('add news', news)
+                print(record['title'])
+
+    add_news_thread = threading.Thread(target=cnn_thread)
+    add_news_thread.start()
+
+    return render_template('cnn.html', files=news_files('cnn'))
 
 
 @app.route('/nytimes', methods=['GET', 'POST'])
-def nytimes():
-    # blocked_words = ["By", "Advertisement", "Supported by"]
-    # source = "nyt"  # all | nyt | iht
-    # section = "all"
-    # time_period = "0"
-    # limit = "10"
-    # offset = "0"
-    # api_key = "x5WGDxz9N2HToSwpoSnYHT4hNpk3psbl"
-    # ny_times = "https://api.nytimes.com/svc/news/v3/content/%s/%s/%s.json?limit=%s&api-key=%s"
-    # query = ny_times % (source, section, time_period, limit, api_key)
-    # resp = requests.get(query)
-    # data = resp.json()['results']
-    # for record in data:
-    #     print(record['title'])
-    #     url = record['url']
-    #     page = urlopen(url)
-    #     soup = BeautifulSoup(page, 'lxml')
-    #     paragraphs = soup.find_all("p", {'class': 'css-18icg9x'})
-    #     for p in paragraphs:
-    #         if p.getText() not in blocked_words:
-    #             print(p.getText())
-    #     print()
+def new_york_times():
+    global add_news_thread, stop_news_thread
+    stop_thread()
 
-    files = {'background_url': url_for('static', filename='images/backgroundDarker.jpg'),
-             'css_news': url_for('static', filename='css/news.css'),
-             'css_master': url_for('static', filename='css/master.css')}
+    @copy_current_request_context
+    def nyt_thread():
+        global stop_news_thread
+        stop_news_thread = False
 
-    return render_template('nytimes.html', files=files)
+        from_date = date.today().strftime("%Y-%m-%d")
+        to_date = (date.today() - timedelta(days=2)).strftime("%Y-%m-%d")
+
+        for k in range(1, 3):
+            all_articles = newsapi.get_everything(sources='the-new-york-times',
+                                                  domains='nytimes.com',
+                                                  from_param=from_date,
+                                                  to=to_date,
+                                                  language='en',
+                                                  sort_by='publishedAt',
+                                                  page=k)
+            for record in all_articles['articles']:
+                if stop_news_thread:
+                    stop_news_thread = False
+                    return
+                url = record['url']
+                try:
+                    page = urlopen(url)
+                except:
+                    continue
+                soup = BeautifulSoup(page, 'lxml')
+                paragraphs = soup.find_all("p", {'class': 'css-18icg9x'})
+                all_text = ''
+                for p in paragraphs:
+                    all_text += str(p.getText()) + " "
+
+                news = {
+                    'title': str(record['title']),
+                    'url': str(record['url']),
+                    'abstract': str(record['description']),
+                    'thumbnail': str(record['urlToImage']),
+                    'content': json.dumps(all_text)
+                }
+                socketio.emit('add news', news)
+                print(record['title'])
+
+    add_news_thread = threading.Thread(target=nyt_thread)
+    add_news_thread.start()
+
+    return render_template('nytimes.html', files=news_files('nyt'))
+
+
+def news_files(logo_site):
+    return {'background_url': url_for('static', filename='images/bg2.png'),
+            'logo': url_for('static', filename='images/' + logo_site + '.png'),
+            'css_news': url_for('static', filename='css/news.css'),
+            'css_master': url_for('static', filename='css/master.css')}
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app)

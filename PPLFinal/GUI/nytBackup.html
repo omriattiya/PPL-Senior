@@ -39,15 +39,17 @@
                 let image = document.createElement('img');
                 image.alt = news['title'];
                 image.src = news['thumbnail'];
-                image.setAttribute('width', '30%');
 
                 let text_div = document.createElement('div');
                 text_div.className = 'news_title';
                 let header_title = document.createElement('h4');
                 header_title.innerText = news['title'];
+                let header_section = document.createElement('h6');
+                header_section.innerText = news['section'];
                 let header_abstract = document.createElement('h6');
                 header_abstract.innerText = news['abstract'];
                 text_div.appendChild(header_title);
+                text_div.appendChild(header_section);
                 if (news['thumbnail'] !== '')
                     text_div.appendChild(image);
                 text_div.appendChild(header_abstract);
@@ -90,7 +92,7 @@
 <div class="content padding_top">
     <div class="abstract">
         <div class="delimiter"></div>
-        The New York Times News
+        New York Times News
         <br><img src='{{ files.logo }}' alt="logo" height="200px" style="margin-top: 10px">
 <div class="delimiter"></div>
     </div>

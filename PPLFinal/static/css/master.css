@@ -1,12 +1,14 @@
 body {
     background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: #FFFFFF;
-    font-family: "Berlin Sans FB", sans-serif;
+    font-family: "Calibri", sans-serif;
     margin: 0;
 }
 
 .nav_bar {
-    background-color: #00000088;
+    background-color: #00b0ff88;
     min-height: 50px;
     margin: 0;
     text-align: center;
@@ -14,7 +16,7 @@ body {
 }
 
 .nav_bar > li > .selected {
-    color: #00FF00
+    color: white;
 }
 
 .nav_bar > li {
@@ -29,6 +31,7 @@ body {
 .nav_bar > li > a {
     text-decoration: none;
     color: #a5a5a5;
+    transition: all 0.5s ease-in-out;
 }
 
 .nav_bar > li > a:hover {
