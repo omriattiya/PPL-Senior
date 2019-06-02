@@ -104,9 +104,9 @@ def calc_model():
 
 
 def sentiment(text):
-    # feats = find_features2gram(word_tokenize(text))
-    feats = find_features2gram(get_ngrams(text, 2))
-    return classifier.classify(feats)
+    feats1 = find_features2gram(word_tokenize(text))
+    feats2 = find_features2gram(get_ngrams(text, 2))
+    return classifier.classify({**feats1, **feats2})
 
     # feats = find_features2gram(get_ngrams(text, 2))
     # v = classifier.classify(feats)
