@@ -15,8 +15,8 @@ import pickle
 
 app = Flask(__name__)
 
-pickle_model = "LinearSVC_classifier.pickle"
-pickle_word_features = "word_features.pickle"
+pickle_model = "PPLFinal/LinearSVC_classifier.pickle"
+pickle_word_features = "PPLFinal/word_features.pickle"
 classifier = None
 word_features = []
 word_features_2gram = []
@@ -111,10 +111,10 @@ def sentiment(text):
     return mode(votes)
 
 
-def chack_positive(head, abstract, text):
+def check_positive(head, abstract, text):
     global classifier, word_features
-    classifier = load_pickle(pickle_model)
     word_features = load_pickle(pickle_word_features)
+    classifier = load_pickle(pickle_model)
     sen_head = sentiment(head)
     sen_abstract = sentiment(abstract)
     sen_text = sentiment(text)
@@ -155,18 +155,20 @@ def load_pickle(filename):
 
 
 if __name__ == '__main__':
-    calc_model()
-    # classifier = load_pickle(pickle_model)
-    print(sentiment("This movie was awesome! The acting was great, plot was wonderful, and there were pythons...so yea!"))
-    print(sentiment("This movie was utter junk. There were absolutely 0 pythons. I don't see what the point was at all. Horrible movie, 0/10"))
-
-    # num_row = 0
-    with open('news_texts.txt', encoding="utf8") as content_file:
-        head = content_file.readline()
-        print(sentiment(head))
-        content = content_file.readline()
-        print(sentiment(content))
-
-    print(sentiment("Trump to hit Mexico with tariffs in anti-immigration measure"))
+    word_features = load_pickle(pickle_word_features)
+    classifier = load_pickle(pickle_model)
+    # calc_model()
+    # # classifier = load_pickle(pickle_model)
+    # print(sentiment("This movie was awesome! The acting was great, plot was wonderful, and there were pythons...so yea!"))
+    # print(sentiment("This movie was utter junk. There were absolutely 0 pythons. I don't see what the point was at all. Horrible movie, 0/10"))
+    #
+    # # num_row = 0
+    # with open('news_texts.txt', encoding="utf8") as content_file:
+    #     head = content_file.readline()
+    #     print(sentiment(head))
+    #     content = content_file.readline()
+    #     print(sentiment(content))
+    #
+    # print(sentiment("Trump to hit Mexico with tariffs in anti-immigration measure"))
 
     # app.run(debug=True)

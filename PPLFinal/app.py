@@ -145,7 +145,7 @@ def news_thread(sources, domains, element_to_find, class_to_find):
                 'thumbnail': str(record['urlToImage']),
                 'content': json.dumps(all_text)
             }
-            if nltk_try.chack_positive(news['title'], news['abstract'], all_text):
+            if nltk_try.check_positive(news['title'], news['abstract'], all_text):
                 socketio.emit('add news', news)
                 print(record['title'])
 

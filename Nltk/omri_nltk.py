@@ -4,6 +4,7 @@ import random
 import nltk
 from nltk import word_tokenize
 
+pickle_model = "LinearSVC_classifier.pickle"
 pickle_word_features = "word_features.pickle"
 classifier = None
 word_features = []
@@ -55,7 +56,7 @@ def machine_learning():
     all_words_pos = nltk.FreqDist(all_words_pos)
     all_words_neg = nltk.FreqDist(all_words_neg)
 
-    word_features = list(set(list(all_words_pos.keys())[:1500] + list(all_words_neg.keys())[:1500]))
+    word_features = list(set(list(all_words_pos.keys())[:3000] + list(all_words_neg.keys())[:3000]))
 
     save_pickle(pickle_word_features, word_features)
     print("saved word features")
@@ -71,6 +72,8 @@ def machine_learning():
     classifier = nltk.NaiveBayesClassifier.train(training_set)
     accur.insert(i, nltk.classify.util.accuracy(classifier, testing_set))
     print('LinearSVC_classifier average accuracy:', sum(accur) / len(accur))
+
+    save_pickle(pickle_model, word_features)
 
 
 def find_features(tweet):
