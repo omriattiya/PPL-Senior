@@ -8,6 +8,7 @@ from nltk import SklearnClassifier
 from nltk.corpus import movie_reviews, stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from sklearn.model_selection import KFold
+from sklearn.linear_model import LinearRegression
 from sklearn.svm import LinearSVC
 from nltk.metrics.scores import (precision, recall)
 from nltk import collections
@@ -17,8 +18,8 @@ app = Flask(__name__)
 
 # pickle_model = "PPLFinal/LinearSVC_classifier2.pickle"
 # pickle_word_features = "PPLFinal/word_features2.pickle"
-pickle_model = "LinearSVC_classifier3.pickle"
-pickle_word_features = "word_features3.pickle"
+pickle_model = "LinearSVC_classifier4.pickle"
+pickle_word_features = "word_features4.pickle"
 classifier = None
 word_features = []
 word_features_2gram = []
@@ -92,12 +93,12 @@ def calc_model():
     training_set = feature_sets[:5000] + feature_sets_2gram[:5000]
 
     linear_svc_classifier = SklearnClassifier(LinearSVC())
-    classifier = nltk.NaiveBayesClassifier.train(testing_set)
-    # classifier = linear_svc_classifier.train(training_set)
-    accur.insert(i, nltk.classify.util.accuracy(classifier, testing_set))
+    # classifier = nltk.NaiveBayesClassifier.train(testing_set)
+    classifier = linear_svc_classifier.train(training_set)
+    # accur.insert(i, nltk.classify.util.accuracy(classifier, testing_set))
 
 
-    print('LinearSVC_classifier average accuracy:', sum(accur) / len(accur))
+    print('LinearSVC_classifier average accuracy:', nltk.classify.util.accuracy(classifier, testing_set))
 
     save_pickle(pickle_model, classifier)
 
