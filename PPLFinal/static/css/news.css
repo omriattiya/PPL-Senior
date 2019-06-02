@@ -20,7 +20,7 @@
     text-align: center;
 }
 
-#stop_load {
+.my_button {
     background-color: #00b0ffDD;
     border: none;
     color: white;
@@ -33,7 +33,7 @@
     border-radius: 60px;
 }
 
-#stop_load:hover {
+.my_button:hover {
     background-color: #00b0ff;
 }
 
@@ -51,4 +51,31 @@
 
 .news-link {
     color: #00b0ff;
+}
+
+#myBtn {
+  display: none;
+  position: fixed;
+  bottom: 70px;
+  right: 30px;
+  z-index: 99;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+#myBtn:hover {
+  background-color: #555;
+}
+
+#stop_load {
+  position: fixed;
+  bottom: 10px;
+  right: 30px;
+  z-index: 99;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+#stop_load:hover {
+  background-color: #555;
 }

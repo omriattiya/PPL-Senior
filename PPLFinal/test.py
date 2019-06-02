@@ -12,7 +12,8 @@ from_date = time.strftime("%Y-%m-%d")
 to_date = (date.today() - timedelta(days=3)).strftime("%Y-%m-%d")
 
 for k in range(1, 5):
-    all_articles = newsapi.get_everything(sources='fox-news',
+    all_articles = newsapi.get_everything(sources='cnn',
+                                          domains='cnn.com',
                                           from_param=from_date,
                                           to=to_date,
                                           language='en',
