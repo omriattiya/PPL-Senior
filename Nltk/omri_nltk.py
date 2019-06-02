@@ -2,7 +2,7 @@ import pickle
 import random
 
 import nltk
-from nltk import word_tokenize
+from nltk import word_tokenize, sent_tokenize
 
 pickle_model = "LinearSVC_classifier.pickle"
 pickle_word_features = "word_features.pickle"
@@ -34,6 +34,19 @@ def machine_learning():
         for record in csv_file:
             negative_documents.append((word_tokenize(record), 0))
 
+    pairs_pos = []
+    pairs_neg = []
+    for i in range(int(len(positive_documents) / 2)):
+        pairs_pos.append((positive_documents[i][0] + positive_documents[i + 1][0], 1))
+        i += 1
+
+    for i in range(int(len(negative_documents) / 2)):
+        pairs_neg.append((negative_documents[i][0] + negative_documents[i + 1][0], 0))
+        i += 1
+
+    positive_documents = pairs_pos
+    negative_documents = pairs_neg
+
     documents = positive_documents + negative_documents
 
     random.shuffle(positive_documents)
@@ -56,15 +69,15 @@ def machine_learning():
     all_words_pos = nltk.FreqDist(all_words_pos)
     all_words_neg = nltk.FreqDist(all_words_neg)
 
-    word_features = list(set(list(all_words_pos.keys())[:3000] + list(all_words_neg.keys())[:3000]))
+    word_features = list(set(list(all_words_pos.keys())[:3500] + list(all_words_neg.keys())[:3500]))
 
     save_pickle(pickle_word_features, word_features)
     print("saved word features")
 
     feature_sets = [(find_features(d[0]), d[1]) for d in documents]
 
-    training_set = feature_sets[5000:]
-    testing_set = feature_sets[:5000]
+    training_set = feature_sets[4000:]
+    testing_set = feature_sets[:4000]
 
     accur = []
     i = 0
@@ -73,7 +86,7 @@ def machine_learning():
     accur.insert(i, nltk.classify.util.accuracy(classifier, testing_set))
     print('LinearSVC_classifier average accuracy:', sum(accur) / len(accur))
 
-    save_pickle(pickle_model, word_features)
+    save_pickle(pickle_model, classifier)
 
 
 def find_features(tweet):

@@ -1,5 +1,5 @@
 import json
-from PPLFinal import nltk_try
+from PPLFinal import ModelNltk
 
 from datetime import date, timedelta
 from flask import Flask, render_template, url_for, redirect
@@ -145,7 +145,7 @@ def news_thread(sources, domains, element_to_find, class_to_find):
                 'thumbnail': str(record['urlToImage']),
                 'content': json.dumps(all_text)
             }
-            if nltk_try.check_positive(news['title'], news['abstract'], all_text):
+            if ModelNltk.check_positive(news['title'], news['abstract'], all_text):
                 socketio.emit('add news', news)
             else:
                 print(record['title'])
