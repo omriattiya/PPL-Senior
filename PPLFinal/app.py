@@ -1,10 +1,10 @@
 import json
-import time
+from PPLFinal import nltk_try
 
 from datetime import date, timedelta
-from flask import Flask, render_template, url_for, jsonify, copy_current_request_context, redirect
-from flask_socketio import SocketIO, emit
-import requests, threading
+from flask import Flask, render_template, url_for, redirect
+from flask_socketio import SocketIO
+import threading
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from newsapi import NewsApiClient
@@ -145,7 +145,7 @@ def news_thread(sources, domains, element_to_find, class_to_find):
                 'thumbnail': str(record['urlToImage']),
                 'content': json.dumps(all_text)
             }
-            if call_shiras_classifier_function(all_text, news['abstract']):
+            if nltk_try.chack_positive(news['title'], news['abstract'], all_text):
                 socketio.emit('add news', news)
                 print(record['title'])
 
