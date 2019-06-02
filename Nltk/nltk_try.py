@@ -22,33 +22,60 @@ pickle_word_features = "word_features.pickle"
 classifier = None
 word_features = []
 
+def get_ngrams(text, n ):
+    n_grams = nltk.ngrams(word_tokenize(text), n)
+    return [ ' '.join(grams) for grams in n_grams]
 
 def calc_model():
     global word_features, classifier
-    documents = [(list(movie_reviews.words(fileid)), category)
-                 for category in movie_reviews.categories()
-                 for fileid in movie_reviews.fileids(category)]
+    # documents = [(list(movie_reviews.words(fileid)), category)
+    #              for category in movie_reviews.categories()
+    #              for fileid in movie_reviews.fileids(category)]
+
+    documents = []
+    documents2gram = []
+
+    with open("positive.txt", 'r') as csv_file:
+        pos = 1
+        for record in csv_file:
+            documents.append((word_tokenize(record), pos))
+            sixgrams = get_ngrams(record, 2)
+            documents2gram.append((get_ngrams(record, 2), pos))
+
+    with open("negative.txt", 'r') as csv_file:
+        for record in csv_file:
+            documents.append((word_tokenize(record), 0))
+
+            documents2gram.append((get_ngrams(record, 2), 0))
+
 
     random.shuffle(documents)
+    random.shuffle(documents2gram)
 
     all_words = []
-    for w in movie_reviews.words():
-        all_words.append(w.lower())
+    for lst in documents:
+        for w in lst[0]:
+            all_words.append(w.lower())
 
     all_words_2gram = []
-    # for w in movie_reviews:
-    #     sixgrams = nltk.ngrams(w.split(), 2)
-    #     all_words_2gram.append(w.lower())
+    for lst in documents2gram:
+        for w in lst[0]:
+            all_words_2gram.append(w.lower())
 
     all_words = nltk.FreqDist(all_words)
     print("getting features")
     word_features = list(all_words.keys())[:5000]
+
+    all_words_2gram = nltk.FreqDist(all_words_2gram)
+    print("getting features")
+    word_features_2gram = list(all_words_2gram.keys())[:5000]
 
     save_pickle(pickle_word_features, word_features)
     print("saved word features")
 
     print("setting features per tweet")
     feature_sets = [(find_features(rev), category) for (rev, category) in documents]
+    feature_sets_2gram = [(find_features(rev), category) for (rev, category) in documents2gram]
 
 
 
@@ -57,11 +84,11 @@ def calc_model():
     accur = []
     i = 0
 
-    testing_set = feature_sets[1900:]
-    training_set = feature_sets[:1900]
+    testing_set = feature_sets[1900:] + feature_sets_2gram[1900:]
+    training_set = feature_sets[:1900] + feature_sets_2gram[:1900]
 
     linear_svc_classifier = SklearnClassifier(LinearSVC())
-    classifier = linear_svc_classifier.train(testing_set)
+    classifier = nltk.NaiveBayesClassifier.train(testing_set)
     accur.insert(i, nltk.classify.util.accuracy(classifier, training_set))
 
 
@@ -115,12 +142,10 @@ if __name__ == '__main__':
     print(sentiment("This movie was utter junk. There were absolutely 0 pythons. I don't see what the point was at all. Horrible movie, 0/10"))
 
     # num_row = 0
-    with open('news_texts.txt') as content_file:
+    with open('news_texts.txt', encoding="utf8") as content_file:
         head = content_file.readline()
-        print(head)
         print(sentiment(head))
         content = content_file.readline()
-        print(content)
         print(sentiment(content))
 
     print(sentiment("Trump to hit Mexico with tariffs in anti-immigration measure"))
