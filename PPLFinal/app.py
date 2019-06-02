@@ -1,12 +1,10 @@
 import json
-import time
-
+import threading
 from datetime import date, timedelta
-from flask import Flask, render_template, url_for, jsonify, copy_current_request_context, redirect
-from flask_socketio import SocketIO, emit
-import requests, threading
-from bs4 import BeautifulSoup
 from urllib.request import urlopen
+from bs4 import BeautifulSoup
+from flask import Flask, render_template, url_for, redirect
+from flask_socketio import SocketIO
 from newsapi import NewsApiClient
 
 # INIT :D
