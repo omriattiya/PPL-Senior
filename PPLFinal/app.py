@@ -113,9 +113,9 @@ def news_thread(sources, domains, element_to_find, class_to_find):
     stop_news_thread = False
 
     from_date = date.today().strftime("%Y-%m-%d")
-    to_date = (date.today() - timedelta(days=2)).strftime("%Y-%m-%d")
+    to_date = (date.today() - timedelta(days=5)).strftime("%Y-%m-%d")
 
-    for k in range(1, 3):
+    for k in range(1, 5):
         all_articles = newsapi.get_everything(sources=sources,
                                               domains=domains,
                                               from_param=from_date,
@@ -147,7 +147,10 @@ def news_thread(sources, domains, element_to_find, class_to_find):
             }
             if nltk_try.check_positive(news['title'], news['abstract'], all_text):
                 socketio.emit('add news', news)
+            else:
                 print(record['title'])
+                print(record['url'])
+                print()
 
 
 if __name__ == '__main__':
