@@ -21,16 +21,46 @@ import csv
 #     for item in items:
 #         csv_item.writerow([item])
 
+def user_proifiles():
+    a = np.loadtxt('ratings.csv', delimiter=',', dtype=str, skiprows=1)
 
-a = np.loadtxt('ratings.csv', delimiter=',', dtype=str, skiprows=1)
+    users = np.unique(a[:, 0], return_counts=True)
+    items = np.split(a[:, 1], np.cumsum(np.unique(a[:, 0], return_counts=True)[1])[:-1])
+    rating = np.split(a[:, 2], np.cumsum(np.unique(a[:, 0], return_counts=True)[1])[:-1])
+    i = 0
+    with open('user profile.csv', 'wb') as csvfile:
+        writer = csv.writer(csvfile)
+        for user in users[0]:
+            writer.writerow([user, items[i], rating[i]])
+            i = i+1
 
-# print(a)
+    return []
 
-#, open('user_profiles', '')
-c = np.unique(a[:, 0], return_counts=True)
-items = np.split(a[:, 1], np.cumsum(np.unique(a[:, 0], return_counts=True)[1])[:-1])
-rating = np.split(a[:, 2], np.cumsum(np.unique(a[:, 0], return_counts=True)[1])[:-1])
-data = np.array(c, items, rating)
+user_proifiles()
 
-print items
 
+
+def item_proifiles():
+    a = np.loadtxt('ratings.csv', delimiter=',', dtype=str, skiprows=1)
+
+    items = np.unique(a[:, 1])
+    users = np.split(a[:, 0], np.cumsum(np.unique(a[:, 0], return_counts=True)[1])[:-1])
+    rating = np.split(a[:, 2], np.cumsum(np.unique(a[:, 0], return_counts=True)[1])[:-1])
+    i = 0
+    with open('items profile.csv', 'wb') as csvfile:
+        writer = csv.writer(csvfile)
+        for item in items[0]:
+            writer.writerow([item, users[i], rating[i]])
+            i = i+1
+
+    return []
+
+item_proifiles()
+
+
+def get_profiles(data):
+    a = np.loadtxt('ratings2.csv', delimiter=',', dtype=str, skiprows=1)
+    size = len(a)*0.8
+    print size
+    a = a[:int(size)]
+    print a
