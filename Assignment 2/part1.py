@@ -44,8 +44,8 @@ def item_proifiles():
     a = np.loadtxt('ratings.csv', delimiter=',', dtype=str, skiprows=1)
 
     items = np.unique(a[:, 1])
-    users = np.split(a[:, 0], np.cumsum(np.unique(a[:, 0], return_counts=True)[1])[:-1])
-    rating = np.split(a[:, 2], np.cumsum(np.unique(a[:, 0], return_counts=True)[1])[:-1])
+    users = np.split(a[:, 0], np.cumsum(np.unique(a[:, 1], return_counts=True)[1])[:-1])
+    rating = np.split(a[:, 2], np.cumsum(np.unique(a[:, 1], return_counts=True)[1])[:-1])
     i = 0
     with open('items profile.csv', 'wb') as csvfile:
         writer = csv.writer(csvfile)
