@@ -35,16 +35,19 @@ def ExtractProfiles(file, user_profile_output, item_profile_output):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 4:
+    if len(sys.argv) < 5:
         print "not enough args"
     else:
-        rating_input_file = sys.argv[1]
-        user_profile_output_directory = sys.argv[2]
-        if '/' not in user_profile_output_directory[-1:]:
-            user_profile_output_directory = user_profile_output_directory + '/'
-        item_profile_output_directory = sys.argv[3]
-        if '/' not in item_profile_output_directory[-1:]:
-            item_profile_output_directory = item_profile_output_directory + '/'
-        user_csv = user_profile_output_directory + 'user profile.csv'
-        item_csv = item_profile_output_directory + 'items profile.csv'
-        ExtractProfiles(rating_input_file, user_csv, item_csv)
+        if 'ExtractProfiles' not in sys.argv[1]:
+            print 'invalid command'
+        else:
+            rating_input_file = sys.argv[2]
+            user_profile_output_directory = sys.argv[3]
+            if '/' not in user_profile_output_directory[-1:]:
+                user_profile_output_directory = user_profile_output_directory + '/'
+            item_profile_output_directory = sys.argv[4]
+            if '/' not in item_profile_output_directory[-1:]:
+                item_profile_output_directory = item_profile_output_directory + '/'
+            user_csv = user_profile_output_directory + 'user profile.csv'
+            item_csv = item_profile_output_directory + 'items profile.csv'
+            ExtractProfiles(rating_input_file, user_csv, item_csv)
