@@ -1,66 +1,32 @@
 import numpy as np
 import csv
 
-# users = []
-# items = []
-# with open('ratings.csv', 'rb') as csvfile:
-#     rating = csv.reader(csvfile, delimiter=',')
-#     next(rating, None)
-#     for row in rating:
-#         users.append(row[0])
-#         items.append(row[1])
-# users = set(users)
-# items = set(items)
-# with open('user_profiles .csv', 'wb') as csvfile:
-#     csv_user = csv.writer(csvfile)
-#     for user in users:
-#         csv_user.writerow([user])
-#
-# with open('items_profiles .csv', 'wb') as csvfile:
-#     csv_item = csv.writer(csvfile, delimiter=',')
-#     for item in items:
-#         csv_item.writerow([item])
-
-def user_proifiles():
-    a = np.loadtxt('ratings.csv', delimiter=',', dtype=str, skiprows=1)
-
-    users = np.unique(a[:, 0], return_counts=True)
-    items = np.split(a[:, 1], np.cumsum(np.unique(a[:, 0], return_counts=True)[1])[:-1])
-    rating = np.split(a[:, 2], np.cumsum(np.unique(a[:, 0], return_counts=True)[1])[:-1])
-    i = 0
-    with open('user profile.csv', 'wb') as csvfile:
-        writer = csv.writer(csvfile)
-        for user in users[0]:
-            writer.writerow([user, items[i], rating[i]])
-            i = i+1
-
-    return []
-
-user_proifiles()
 
 
-
-def item_proifiles():
-    a = np.loadtxt('ratings.csv', delimiter=',', dtype=str, skiprows=1)
-
+def ExtractProfiles(file, user_profile_output, item_profile_output):
+    a = np.loadtxt(file, delimiter=',', dtype=str, skiprows=1)
+    users = np.unique(a[:, 0])
     items = np.unique(a[:, 1])
-    users = np.split(a[:, 0], np.cumsum(np.unique(a[:, 1], return_counts=True)[1])[:-1])
-    rating = np.split(a[:, 2], np.cumsum(np.unique(a[:, 1], return_counts=True)[1])[:-1])
-    i = 0
-    with open('items profile.csv', 'wb') as csvfile:
+    user_pro = { i : ([],[]) for i in users }
+    item_pro = { i : ([],[]) for i in items }
+
+
+    for row in a:
+        user_pro[row[0]][0].append(row[1])
+        user_pro[row[0]][1].append(row[2])
+        item_pro[row[1]][0].append(row[0])
+        item_pro[row[1]][1].append(row[2])
+
+
+    with open(user_profile_output, 'wb') as csvfile:
         writer = csv.writer(csvfile)
-        for item in items[0]:
-            writer.writerow([item, users[i], rating[i]])
-            i = i+1
+        for user in users:
+            writer.writerow([user, user_pro[user][0], user_pro[user][1]])
 
-    return []
+    with open(item_profile_output, 'wb') as csvfile:
+        writer = csv.writer(csvfile)
+        for item in item_pro:
+            writer.writerow([item, item_pro[item][0], item_pro[item][1]])
 
-item_proifiles()
 
-
-def get_profiles(data):
-    a = np.loadtxt('ratings2.csv', delimiter=',', dtype=str, skiprows=1)
-    size = len(a)*0.8
-    print size
-    a = a[:int(size)]
-    print a
+ExtractProfiles('ratings.csv', 'user profile.csv', 'items profile.csv')
