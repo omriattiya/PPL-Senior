@@ -1,13 +1,17 @@
 import math
-
+from flask import Flask
+from flask import request
 import numpy as np
 from random import randint
 from part1 import *
 
+app = Flask(__name__)
 
 def init_vec(K, users, items):
-    U = {}
-    V = {}
+    # U = map(lambda x: x, users)
+    U = {x: randint(0, K - 1)for x in users}
+    V = {x: randint(0, K - 1)for x in items}
+
     cluster4user = cluster4vec(K, U, users)
     cluster4item = cluster4vec(K, V, items)
     return cluster4user, cluster4item, U, V
@@ -15,7 +19,6 @@ def init_vec(K, users, items):
 def cluster4vec(K, vec, lst):
     T = {}
     for id in lst:
-        vec[id] = randint(0, K - 1)
         if T.has_key(vec[id]):
             T[vec[id]].append(id)
         else:
@@ -26,7 +29,7 @@ def average_rating(users):
     temp = np.array([])
     for arr in users.values():
         temp = np.append(temp, arr[1], axis=0)
-    stAvg = np.mean(temp)
+    stAvg = np.mean(temp.astype(np.float))
     return stAvg
 
 def update_B(K, data_train, cluster4user, cluster4item):
@@ -53,8 +56,7 @@ def update_B(K, data_train, cluster4user, cluster4item):
                     users_count += 1
                 avg += user_avg
 
-            B[userU][itemV] = avg / users_count if users_count > 0 else avg_ast if avg_ast != 0 else average_rating()
-
+            B[userU][itemV] = avg / users_count if users_count > 0 else avg_ast if avg_ast != 0 else average_rating(data_train)
     return B
 
 def updateVector(data, cluster, B, vecToUpdate, secondVec):
@@ -62,19 +64,17 @@ def updateVector(data, cluster, B, vecToUpdate, secondVec):
         user_profile = data[key]
         match_user_cluster = {}
         for k in cluster:
-            user_sum = 0
+            sum = 0
             for index in range(len(user_profile[1])):
                 item_id = user_profile[0][index]
-                item_rating = user_profile[1][index]
-                b_rating = B[k][secondVec[item_id]]
-                temp = math.pow(item_rating - b_rating, 2)
-                user_sum += temp
+                temp = math.pow(float(user_profile[1][index]) - float(B[k][secondVec[item_id]]), 2)
+                sum += temp
 
-            match_user_cluster[k] = user_sum
-        user_new_cluster = min(match_user_cluster, key=match_user_cluster.get)
+            match_user_cluster[k] = sum
+        user_new = min(match_user_cluster, key=match_user_cluster.get)
         cluster[vecToUpdate[key]].remove(key)
-        vecToUpdate[key] = user_new_cluster
-        cluster[user_new_cluster].append(key)
+        vecToUpdate[key] = user_new
+        cluster[user_new].append(key)
 
 
 def updet_rmse(users, B, U, V):
@@ -97,7 +97,7 @@ def updet_rmse(users, B, U, V):
             else:
                 b_rating = B_mean
             test_rating = user_profile[1][index]
-            temp = math.pow(b_rating - test_rating, 2)
+            temp = math.pow(float (b_rating) - float(test_rating), 2)
             sumSqr += temp
             item_count += 1
     return math.sqrt(sumSqr / item_count )
@@ -117,28 +117,54 @@ def ExtractCB(file, K_size=20, T_size=10, E_size=0.01, U_output="", V_output="",
     iters=1
     while T_size > iters and min_gap > E_size:
         updateVector(users, cluster4user, B, U, V)
-        B2 = update_B(K_size, data_train, cluster4user, cluster4item)
+        B2 = update_B(K_size, users, cluster4user, cluster4item)
         updateVector(items, cluster4item, B2, V, U)
-        B2 = update_B(K_size, data_train, cluster4user, cluster4item)
-        i = updet_rmse(B2, U, V)
+        B2 = update_B(K_size, users, cluster4user, cluster4item)
+        i = updet_rmse(users, B2, U, V)
         min_gap = math.fabs(i - rmse)
         B = B2
         rmse = i
         iters = iters + 1
 
-    with open(U_output, 'wb') as u_file:
-        writer = csv.writer(u_file)
-        for key, value in U.items():
-            writer.writerow([key, value])
-    with open(V_output, 'wb') as v_file:
-        writer = csv.writer(v_file)
-        for key, value in V.items():
-            writer.writerow([key, value])
+
+    write(U_output, U)
+    write(V_output, V)
+
     with open(B_output, 'wb') as b_file:
         writer = csv.writer(b_file)
         writer.writerows(B)
 
 
+def write(filename, data):
+    with open(filename, 'wb') as file:
+        writer = csv.writer(file)
+        for key, value in data.items():
+            writer.writerow([key, value])
 
 
-ExtractCB('ratings.csv')
+@app.route('/', methods=['GET','POST'])
+def serve_part2():
+    # get request arguments
+    user_id = request.args.get('userid')
+    n = request.args.get('n')
+
+    # input validations
+    if user_id is None:
+        return "user id is invalid"
+    if n is None:
+        return "n is invalid"
+    try:
+        int(n)
+    except Exception:
+        return "n is not a number"
+
+
+    # ExtractCB(argsDict['rating_file'], argsDict['K'], argsDict['T'], argsDict['epsilon'], argsDict['u_file'],
+    #           argsDict['v_file'], argsDict['b_file'])
+    # return highest_predictions
+
+
+if __name__ == '__main__':
+    print "web service is running"
+    app.run(debug=True)
+    # ExtractCB('ratings.csv', U_output="U_output2.csv", V_output="V_output2.csv", B_output="B_output2.csv")
