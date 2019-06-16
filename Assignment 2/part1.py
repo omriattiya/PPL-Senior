@@ -1,5 +1,7 @@
 import numpy as np
 import csv
+import sys
+
 
 def get_profiles(data):
     users = np.unique(data[:, 0])
@@ -14,6 +16,7 @@ def get_profiles(data):
         item_pro[row[1]][1].append(row[2])
 
     return user_pro, item_pro
+
 
 def ExtractProfiles(file, user_profile_output, item_profile_output):
     a = np.loadtxt(file, delimiter=',', dtype=str, skiprows=1)
@@ -31,4 +34,17 @@ def ExtractProfiles(file, user_profile_output, item_profile_output):
             writer.writerow([item, item_pro[item][0], item_pro[item][1]])
 
 
-ExtractProfiles('ratings.csv', 'user profile.csv', 'items profile.csv')
+if __name__ == '__main__':
+    if len(sys.argv) < 4:
+        print "not enough args"
+    else:
+        rating_input_file = sys.argv[1]
+        user_profile_output_directory = sys.argv[2]
+        if '/' not in user_profile_output_directory[-1:]:
+            user_profile_output_directory = user_profile_output_directory + '/'
+        item_profile_output_directory = sys.argv[3]
+        if '/' not in item_profile_output_directory[-1:]:
+            item_profile_output_directory = item_profile_output_directory + '/'
+        user_csv = user_profile_output_directory + 'user profile.csv'
+        item_csv = item_profile_output_directory + 'items profile.csv'
+        ExtractProfiles(rating_input_file, user_csv, item_csv)
