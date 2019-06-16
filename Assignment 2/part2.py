@@ -1,12 +1,9 @@
 import math
-from flask import Flask
 from flask import request
 import numpy as np
 from random import randint
 from part1 import *
 import sys
-
-app = Flask(__name__)
 
 
 def init_vec(K, users, items):
@@ -148,27 +145,6 @@ def write(filename, data):
             writer.writerow([key, value])
 
 
-@app.route('/', methods=['GET', 'POST'])
-def serve_part2():
-    # get request arguments
-    user_id = request.args.get('userid')
-    n = request.args.get('n')
-
-    # input validations
-    if user_id is None:
-        return "user id is invalid"
-    if n is None:
-        return "n is invalid"
-    try:
-        int(n)
-    except Exception:
-        return "n is not a number"
-
-    # ExtractCB(argsDict['rating_file'], argsDict['K'], argsDict['T'], argsDict['epsilon'], argsDict['u_file'],
-    #           argsDict['v_file'], argsDict['b_file'])
-    # return highest_predictions
-
-
 if __name__ == '__main__':
     if len(sys.argv) < 8:
         print "not enough args"
@@ -203,7 +179,3 @@ if __name__ == '__main__':
             v_output = V_output_dir + 'V_output.csv'
             b_output = B_output_dir + 'B_output.csv'
             ExtractCB(rating_input_file, k, t, e, u_output, v_output, b_output)
-
-    if len(sys.argv) == 1 or 'ExtractCB' not in sys.argv[1]:
-        print "web service is running"
-        app.run(debug=True)
