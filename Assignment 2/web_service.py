@@ -4,7 +4,7 @@ from flask import request
 app = Flask(__name__)
 
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['GET','POST'])
 def serve_part2():
     # get request arguments
     user_id = request.args.get('userid')
@@ -20,7 +20,7 @@ def serve_part2():
     except Exception:
         return "n is not a number"
 
-    highest_predictions = CALL_SHIRAS_FUNCTION(user_id, n)
+    highest_predictions = "nice, its working"
     return highest_predictions
 
 
