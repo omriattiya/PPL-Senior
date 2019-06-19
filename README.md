@@ -1,6 +1,6 @@
 # python-development-tools
 In these repository there are all the assignments, labs and final project of the Principles of Programming Languages elective course at spring 2019 at ,Ben Gurion University, Israel.
-The course included 2 home assignments, 2 labs and 1 final project
+The course included 2 home assignments, 2 labs and 1 final project.
 
 # Final Project - The Good News Website
 ## ABSTRACT
@@ -44,7 +44,7 @@ cd good_news_website
 python -m flask run
 ```
 Wait a few seconds until you see the line
-> * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+> *Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 
 Now the server is running and you can access it in [http://127.0.0.1:5000/main](http://127.0.0.1:5000/main)
 
