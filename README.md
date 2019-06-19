@@ -52,4 +52,4 @@ Now the server is running and you can access it in [http://127.0.0.1:5000/main](
 - Omri Attiya - *initial work & client side* - [@github/omriattiya](https://github.com/omriattiya)
 - Shira Ezra - *machine learning classifier* - [@github/shiraez](https://github.com/shiraez)
 
-For more details [contributors](https://github.com/omriattiya/python-development-tools/graphs/contributors).
+For more details see [contributors](https://github.com/omriattiya/python-development-tools/graphs/contributors).
