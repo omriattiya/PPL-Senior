@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ files.css_news }}">
+    <link rel="stylesheet" type="text/css" href="{{ files.css_master }}">
+    <script type="text/javascript" src="{{ files.js_news }}"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <style>
+        body {
+            background-image: url({{ files.background_url }});
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>PPL Final Project</title>
+
+</head>
+<body>
+<ul class="nav_bar">
+    <li><a href="/main">HOME</a></li>
+    <li><a href="/bbc">BBC</a></li>
+    <li><a class="selected" href="/cnn">CNN</a></li>
+    <li><a href="/nytimes">NY TIMES</a></li>
+
+</ul>
+
+<button class="my_button" onclick="topFunction()" id="myBtn" title="Go to top">↑</button>
+<button class="my_button" id="stop_load" onclick="stop_load()">Stop Loading Content &#10074;&#10074;</button>
+
+<div class="content padding_top">
+    <div class="abstract">
+        <div class="delimiter"></div>
+        CNN News
+        <br><img src='{{ files.logo }}' alt="logo" height="200px" style="margin-top: 10px">
+        <div class="delimiter"></div>
+    </div>
+    <div id="news" class="articles">
+    </div>
+
+</div>
+</body>
+</html>
