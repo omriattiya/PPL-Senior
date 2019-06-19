@@ -38,7 +38,7 @@ pip install nltk
 pip install beautifulsoup4
 pip install flask
 ```
-## Running 
+## Deployment 
 ```
 cd good_news_website
 python -m flask run
@@ -47,6 +47,15 @@ Wait a few seconds until you see the line
 > *Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 
 Now the server is running and you can access it in [http://127.0.0.1:5000/main](http://127.0.0.1:5000/main)
+
+## Built With
+
+* [Flask](http://flask.pocoo.org/) - The web framework used
+* [Flask-SocketIO](https://flask-socketio.readthedocs.io/en/latest/) - Used for bi-directional communications between the clients and the server.
+* [BeautifulSoup](https://pypi.org/project/beautifulsoup4/) - Used for extracting news content
+* [NLTK](https://www.nltk.org/) - Used for creating our classifier
+* [News API](https://github.com/mattlisiv/newsapi-python) - Used for retrieving news headlines data
+
 
 ## Contributing
 - Omri Attiya - *initial work & client side* - [@github/omriattiya](https://github.com/omriattiya)
