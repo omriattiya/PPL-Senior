@@ -1,13 +1,13 @@
 import json
-from PPLFinal import ModelNltk
-
+import threading
+from bs4 import BeautifulSoup
 from datetime import date, timedelta
 from flask import Flask, render_template, url_for, redirect
 from flask_socketio import SocketIO
-import threading
-from bs4 import BeautifulSoup
-from urllib.request import urlopen
 from newsapi import NewsApiClient
+from urllib.request import urlopen
+
+import ModelNltk
 
 # INIT :D
 add_news_thread = None
@@ -29,17 +29,6 @@ def stop_thread():
     stop_news_thread = True
     if add_news_thread is not None:
         add_news_thread.join()
-
-
-@app.errorhandler(404)
-def redirect_to_main(err):
-    return redirect(url_for('main'))
-
-
-@app.errorhandler(500)
-def redirect_to_main(err):
-    print("wtf")
-    return err
 
 
 @app.route('/main', methods=['GET', 'POST'])

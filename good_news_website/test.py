@@ -1,10 +1,10 @@
+import json
+import requests
 import time
-from newsapi import NewsApiClient
-from datetime import date, timedelta
-
 from bs4 import BeautifulSoup
+from datetime import date, timedelta
+from newsapi import NewsApiClient
 from urllib.request import urlopen
-import json, requests
 
 newsapi = NewsApiClient(api_key='3334261d6662411b904a56968905f2bd')
 
